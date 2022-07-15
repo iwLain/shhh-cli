@@ -2,7 +2,8 @@ import requests
 import helper
 import secrets
 import random
-
+import json
+ 
 passphrase = secrets.token_urlsafe(32)
   
 for _ in range(15):
@@ -31,8 +32,10 @@ params = {
 
 try:
     response = requests.post(instanceUrl + "/api/secret", json=params, timeout=5)
+    #print(response)
+    json = json.loads(response.text)
+    link = json['response']['link']
     response.raise_for_status()
-    # Code here will only run if the request is successful
 except requests.exceptions.HTTPError as errh:
     print(errh)
 except requests.exceptions.ConnectionError as errc:
@@ -42,5 +45,6 @@ except requests.exceptions.Timeout as errt:
 except requests.exceptions.RequestException as err:
     print(err)
 
-print("Passphrase is: " + passphrase)
-print(response.text)
+print("Passphrase is:\n" + passphrase)
+print("Link is:\n" + link)
+#print(response.text)
